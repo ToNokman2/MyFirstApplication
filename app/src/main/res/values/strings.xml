@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MyFirstApplication3</string>
+    <string name="string_item_price">item price</string>
+    <string name="string_item_name">item name</string>
+</resources>
