@@ -1,31 +1,32 @@
 package com.jnu.myfirstapplication3;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.jnu.myfirstapplication3.data.DataBank;
 import com.jnu.myfirstapplication3.data.ShopItem;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+    private ArrayList<ShopItem> shopItems= new ArrayList<>();
+    private ShopItemAdapter shopItemAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,13 +36,17 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView mainRecyclerView = findViewById(R.id.recyclerview_main);
         mainRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        ArrayList<ShopItem> shopItems= new ArrayList<>();
-        shopItems.add(new ShopItem("软件项目管理案例教程（第4版）",R.drawable.book_2));
-        shopItems.add(new ShopItem("创新工程实践",R.drawable.book_no_name));
-        shopItems.add(new ShopItem("信息安全数学基础（第2版）",R.drawable.book_1));
+
+        shopItems = new DataBank().LoadShopItems(MainActivity.this);
+
+        if(0 == shopItems.size()) {
+            shopItems.add(new ShopItem("软件项目管理案例教程（第4版）", R.drawable.book_2));
+            shopItems.add(new ShopItem("创新工程实践", R.drawable.book_no_name));
+            shopItems.add(new ShopItem("信息安全数学基础（第2版）", R.drawable.book_1));
+        }
 
         String []itemNames = new String[]{"商品1","商品2","商品3"};
-        ShopItemAdapter shopItemAdapter = new ShopItemAdapter(shopItems);
+        shopItemAdapter = new ShopItemAdapter(shopItems);
         mainRecyclerView.setAdapter(shopItemAdapter);
 
         registerForContextMenu(mainRecyclerView);
@@ -56,29 +61,74 @@ public class MainActivity extends AppCompatActivity {
                         shopItems.add(new ShopItem(name, R.drawable.book_2));
                         shopItemAdapter.notifyItemInserted(shopItems.size());
 
+                        new DataBank().SaveShopItems(this.getApplicationContext(),shopItems);
+
                     } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
 
                     }
                 }
         );
+
+        updateItemLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        int position = data.getIntExtra("position",0);
+                        String name = data.getStringExtra("name");
+                        ShopItem shopItem = shopItems.get(position);
+                        shopItem.setName(name);
+                        shopItemAdapter.notifyItemChanged(position);
+
+                        new DataBank().SaveShopItems(MainActivity.this,shopItems);
+
+                    } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
+
+                    }
+                }
+        );
+
     }
 
     ActivityResultLauncher<Intent>addItemLauncher;
-
+    ActivityResultLauncher<Intent>updateItemLauncher;
     @Override
     public boolean onContextItemSelected(MenuItem item){
-        AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo)item
-                .getMenuInfo();
+
         switch (item.getItemId()){
             case 0:
-                Intent intent = new Intent(MainActivity.this,ShopItemDetailsActivity.class);
+                Intent intent = new Intent(MainActivity.this, BookDetailsActivity.class);
+
                 addItemLauncher.launch(intent);
                 break;
 
             case 1:
-                break;
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Delete Data");
+                builder.setMessage("Are you sure you want to delete this data?");
+                builder.setPositiveButton("Yes",new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog,int which){
+                        shopItems.remove(item.getOrder());
+                        shopItemAdapter.notifyItemRemoved(item.getOrder());
 
+                        new DataBank().SaveShopItems(MainActivity.this,shopItems);
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Perform any necessary actions for "No" button
+                    }
+                });
+                builder.create().show();
+                break;
             case 2:
+                Intent intentUpdate = new Intent(MainActivity.this, BookDetailsActivity.class);
+                ShopItem shopItem = shopItems.get(item.getOrder());
+                intentUpdate.putExtra("name",shopItem.getName());
+                intentUpdate.putExtra("position",item.getOrder());
+                updateItemLauncher.launch(intentUpdate);
                 break;
 
             default:
