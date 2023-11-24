@@ -1,10 +1,12 @@
 <resources>
     <string name="app_name">MyFirstApplication3</string>
-    <string name="string_item_price">item price</string>
     <string name="string_item_name">item name</string>
-    <string name="String_OKK" />
     <string name="EditText_name" />
     <string name="String_ok">YES</string>
     <string name="String_no">NO</string>
     <string name="string_book_name">Book name</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="bookname1" />
+    <string name="string_ok" />
 </resources>
