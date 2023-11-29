@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
                 case 0:
                     return new ShoppingListFragment();
                 case 1:
-                    return new BaiduMapFragment();
+                    return new TencentMapFragment();
                 case 2:
                     return new WebViewFragment();
                 default:
