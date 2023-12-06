@@ -1,7 +1,9 @@
 package com.jnu.myfirstapplication3;
 
 import android.os.Bundle;
+import android.view.WindowManager;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -11,52 +13,66 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.jnu.myfirstapplication3.TaskFragment;
+import com.jnu.myfirstapplication3.WodeFragment;
 
 public class MainActivity extends AppCompatActivity {
-    private String []tabHeaderStrings = {"任务","奖励","我的"};
+    private final String[] tabHeaderStrings = {"任务", "奖励", "统计","我"};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_recycleview);
 
+        // 启用全屏模式
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        setContentView(R.layout.activity_main);
+        // 获取ViewPager2和TabLayout的实例
         ViewPager2 viewPager = findViewById(R.id.view_pager);
         TabLayout tabLayout = findViewById(R.id.tab_layout);
+        // 创建适配器
 
-        FragmentAdapter pagerAdapter = new FragmentAdapter(getSupportFragmentManager(), getLifecycle());
-        viewPager.setAdapter(pagerAdapter);
-
+        FragmentAdapter fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), getLifecycle());
+        viewPager.setAdapter(fragmentAdapter);
+        // 将TabLayout和ViewPager2进行关联
         new TabLayoutMediator(tabLayout, viewPager,
                 (tab, position) -> tab.setText(tabHeaderStrings[position])
         ).attach();
+
     }
 
-    private class FragmentAdapter extends FragmentStateAdapter {
-        private static final int NUM_TABS = 3;
+    public static class FragmentAdapter extends FragmentStateAdapter {
+        private static final int NUM_TABS = 4;
 
-        public FragmentAdapter(FragmentManager fragmentManager, Lifecycle lifecycle) {
+        public FragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
             super(fragmentManager, lifecycle);
-
         }
 
-
+        @NonNull
+        @Override
         public Fragment createFragment(int position) {
+            // 根据位置返回对应的Fragment实例
             switch (position) {
                 case 0:
-                    return new ShoppingListFragment();
+                    return new TaskFragment();
                 case 1:
-                    return new WebViewFragment();
+                    return new WodeFragment();
                 case 2:
+                    return new WodeFragment();
+                case 3:
                     return new WodeFragment();
                 default:
                     return null;
             }
         }
 
-
+        @Override
         public int getItemCount() {
             return NUM_TABS;
         }
     }
+}
     /* private ArrayList<ShopItem> shopItems= new ArrayList<>();
     private ShopItemAdapter shopItemAdapter;
 
@@ -226,4 +242,3 @@ public class MainActivity extends AppCompatActivity {
         }
     }
      */
-}
