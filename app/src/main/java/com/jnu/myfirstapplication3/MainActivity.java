@@ -13,7 +13,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 public class MainActivity extends AppCompatActivity {
-    private String []tabHeaderStrings = {"Shopping items","baidu maps","News"};
+    private String []tabHeaderStrings = {"任务","奖励","我的"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,9 +44,9 @@ public class MainActivity extends AppCompatActivity {
                 case 0:
                     return new ShoppingListFragment();
                 case 1:
-                    return new TencentMapFragment();
-                case 2:
                     return new WebViewFragment();
+                case 2:
+                    return new WodeFragment();
                 default:
                     return null;
             }
