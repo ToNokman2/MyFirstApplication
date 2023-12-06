@@ -42,9 +42,9 @@ public class MainActivity extends AppCompatActivity {
         public Fragment createFragment(int position) {
             switch (position) {
                 case 0:
-                    return new ShoppingListFragment();
+                    return new TaskFragment();
                 case 1:
-                    return new WebViewFragment();
+                    return new ShoppingListFragment();
                 case 2:
                     return new WodeFragment();
                 default:
