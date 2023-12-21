@@ -17,7 +17,7 @@ import com.jnu.myfirstapplication3.TaskFragment;
 import com.jnu.myfirstapplication3.WodeFragment;
 
 public class MainActivity extends AppCompatActivity {
-    private final String[] tabHeaderStrings = {"任务", "奖励", "统计","我"};
+    private final String[] tabHeaderStrings = {"任务", "奖励","我的"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

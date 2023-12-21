@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.jnu.myfirstapplication3.Adapter.TaskRecyclerviewAdapter;
+import com.jnu.myfirstapplication3.data.DataBank;
 import com.jnu.myfirstapplication3.data.TaskItem;
 import com.jnu.myfirstapplication3.interFace.TaskJoint;
 import com.jnu.myfirstapplication3.data.TaskDataBank;
@@ -125,8 +126,9 @@ public class TypeTaskFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         int position = item.getOrder();
 
-                        taskListAll.remove(position);
+                        taskListWithType.remove(position);
                         taskRecyclerviewAdapter.notifyItemRemoved(position);
+
                     }
                 });
                 builder.setNegativeButton("否定", new DialogInterface.OnClickListener() {

@@ -37,6 +37,7 @@ public class TaskFragment extends Fragment{
     private ArrayList<TaskItem> taskList;
     private TaskJoint taskjoint;
     private TextView sumPointView;
+
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {

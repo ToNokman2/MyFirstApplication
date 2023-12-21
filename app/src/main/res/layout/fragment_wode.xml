@@ -1,18 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/id_contet4"
+    android:shape="rectangle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".WodeFragment">
+    android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/contet4"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:background="@color/blue"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/app_name"
+            android:textColor="@android:color/white"
+            android:textSize="25sp"
+            android:textStyle="bold"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="这是个人信息界面"
-        android:textSize="50sp" />
+        android:orientation="vertical"
+        android:padding="16dp">
 
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/touxiang"
+                android:padding="4dp" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:text="@string/name"
+                android:textSize="20sp"
+                />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/ClearData"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="清除数据"
+            android:layout_marginTop="16dp" />
+
+
+    </LinearLayout>
 </LinearLayout>
