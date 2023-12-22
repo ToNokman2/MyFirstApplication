@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -89,32 +90,11 @@ public class TaskFragment extends Fragment{
         ).attach();
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> tab.setText(taskType[position])).attach();       // 将 TabLayout 和 ViewPager 关联
 
-        // 添加任务
+
         addTaskLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == requireActivity().RESULT_OK) {
-                        Intent intent = result.getData();
-                        String title = intent.getStringExtra("title");
-                        int points = Integer.parseInt(intent.getStringExtra("points"));
-                        int numbers = Integer.parseInt(intent.getStringExtra("time"));
-                        String type = intent.getStringExtra("type");
-
-                        TaskItem myTask = new TaskItem(title,points,numbers,0,type);        // 格式化
-
-                        taskList.add(myTask);
-                        System.out.println(taskList);
-                        List<Fragment> fragments = getChildFragmentManager().getFragments();
-                        for(Fragment fragment:fragments){
-                            if(fragment instanceof TypeTaskFragment){
-                                TypeTaskFragment typeTaskFragment = (TypeTaskFragment)fragment;
-                                if(typeTaskFragment.taskType.equals(myTask.getTaskType())) {
-                                    typeTaskFragment.taskListWithType.add(myTask);
-                                    typeTaskFragment.taskRecyclerviewAdapter.notifyItemInserted(typeTaskFragment.taskListWithType.size());
-                                }
-                            }
-                        }
-                        taskjoint.saveTaskItems(requireActivity().getApplicationContext(),FILE_NAME,taskList);      // 保存数据
-
+                        handleTaskResult(result.getData());
                     }
                     else if (result.getResultCode() == requireActivity().RESULT_CANCELED) {
                     }
@@ -129,7 +109,33 @@ public class TaskFragment extends Fragment{
 
         return rootView;
     }
+    private void handleTaskResult(Intent data) {
+        String title = data.getStringExtra("title");
+        int points = Integer.parseInt(data.getStringExtra("points"));
+        int numbers = Integer.parseInt(data.getStringExtra("time"));
+        String type = data.getStringExtra("type");
 
+        TaskItem myTask = new TaskItem(title, points, numbers, 0, type);
+
+        addTaskToList(myTask);
+        saveTaskList();
+    }
+
+    private void addTaskToList(TaskItem task) {
+        taskList.add(task);
+        for (Fragment fragment : getChildFragmentManager().getFragments()) {
+            if (fragment instanceof TypeTaskFragment) {
+                TypeTaskFragment typeTaskFragment = (TypeTaskFragment) fragment;
+                if (typeTaskFragment.taskType.equals(task.getTaskType())) {
+                    typeTaskFragment.taskListWithType.add(task);
+                    typeTaskFragment.taskRecyclerviewAdapter.notifyItemInserted(typeTaskFragment.taskListWithType.size());
+                }
+            }
+        }
+    }
+    private void saveTaskList() {
+        taskjoint.saveTaskItems(requireActivity().getApplicationContext(), FILE_NAME, taskList);
+    }
 
     private static class PagerAdapter extends FragmentStateAdapter {
 
