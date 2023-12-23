@@ -14,14 +14,13 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jnu.myfirstapplication3.R;
-import com.jnu.myfirstapplication3.data.TaskDataBank;
 import com.jnu.myfirstapplication3.data.TaskItem;
 import com.jnu.myfirstapplication3.interFace.TaskJoint;
 
 import java.util.ArrayList;
 
 public class TaskRecyclerviewAdapter extends RecyclerView.Adapter<TaskRecyclerviewAdapter.MyViewHolder>{
-    private final String FILE_NAME = "taskData.ser";
+    private final String FILE_TASK_NAME = "taskData.ser";
     private TaskJoint taskJoint;
     private Context context;
     private ArrayList<TaskItem> taskList;

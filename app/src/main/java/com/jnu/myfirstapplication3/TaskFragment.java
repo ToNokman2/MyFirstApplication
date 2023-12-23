@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -23,28 +22,35 @@ import android.widget.TextView;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.jnu.myfirstapplication3.data.RewardDataBank;
+import com.jnu.myfirstapplication3.data.RewardItem;
 import com.jnu.myfirstapplication3.data.TaskDataBank;
+import com.jnu.myfirstapplication3.interFace.RewardJoint;
 import com.jnu.myfirstapplication3.interFace.TaskJoint;
 import com.jnu.myfirstapplication3.data.TaskItem;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class TaskFragment extends Fragment{
     private final static  String[] taskType = {"每日任务", "每周任务"};
-    private final String FILE_NAME = "taskData.ser";
+    private final String FILE_TASK_NAME = "taskData.ser";
+    private final String FILE_REWARD_NAME = "rewardData.ser";
     private int pointSumText;
     private ActivityResultLauncher<Intent> addTaskLauncher;
+
     private ArrayList<TaskItem> taskList;
-    private TaskJoint taskjoint;
+    private ArrayList<RewardItem> rewardList;
+    private TaskJoint taskJoint;
+    private RewardJoint rewardJoint;
     private TextView sumPointView;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction() != null && intent.getAction().equals("MY_CUSTOM_ACTION")) {
-                taskList = taskjoint.loadTaskItems(requireActivity(),FILE_NAME);
-                pointSumText = getPointSum(taskList);
+                taskList = taskJoint.loadTaskItems(requireActivity(), FILE_TASK_NAME);
+                rewardList = rewardJoint.loadRewardItems(requireActivity(),FILE_REWARD_NAME);
+                pointSumText = getPointSum(taskList, rewardList);
                 sumPointView.setText("   "+pointSumText);
             }
         }
@@ -71,10 +77,12 @@ public class TaskFragment extends Fragment{
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_task, container, false);
 
-        taskjoint = new TaskDataBank();
-        taskList = taskjoint.loadTaskItems(requireActivity(),FILE_NAME);
+        taskJoint = new TaskDataBank();
+        rewardJoint = new RewardDataBank();
+        taskList = taskJoint.loadTaskItems(requireActivity(), FILE_TASK_NAME);
+        rewardList = rewardJoint.loadRewardItems(requireActivity(),FILE_REWARD_NAME);
 
-        pointSumText = getPointSum(taskList);
+        pointSumText = getPointSum(taskList,rewardList);
         sumPointView = rootView.findViewById(R.id.point_sum_text);
         sumPointView.setText("   "+pointSumText);
 
@@ -94,7 +102,7 @@ public class TaskFragment extends Fragment{
         addTaskLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == requireActivity().RESULT_OK) {
-                        handleTaskResult(result.getData());
+                        addHandleTaskResult(result.getData());
                     }
                     else if (result.getResultCode() == requireActivity().RESULT_CANCELED) {
                     }
@@ -109,7 +117,7 @@ public class TaskFragment extends Fragment{
 
         return rootView;
     }
-    private void handleTaskResult(Intent data) {
+    private void addHandleTaskResult(Intent data) {
         String title = data.getStringExtra("title");
         int points = Integer.parseInt(data.getStringExtra("points"));
         int numbers = Integer.parseInt(data.getStringExtra("time"));
@@ -124,17 +132,16 @@ public class TaskFragment extends Fragment{
     private void addTaskToList(TaskItem task) {
         taskList.add(task);
         for (Fragment fragment : getChildFragmentManager().getFragments()) {
-            if (fragment instanceof TypeTaskFragment) {
-                TypeTaskFragment typeTaskFragment = (TypeTaskFragment) fragment;
-                if (typeTaskFragment.taskType.equals(task.getTaskType())) {
-                    typeTaskFragment.taskListWithType.add(task);
-                    typeTaskFragment.taskRecyclerviewAdapter.notifyItemInserted(typeTaskFragment.taskListWithType.size());
+            if (fragment instanceof PhaseTaskFragment) {
+                PhaseTaskFragment phaseTaskFragment = (PhaseTaskFragment) fragment;
+                if (phaseTaskFragment.isMatchingTaskType(task.getTaskType())) {
+                    phaseTaskFragment.addTaskAndNotifyAdapter(task);
                 }
             }
         }
     }
     private void saveTaskList() {
-        taskjoint.saveTaskItems(requireActivity().getApplicationContext(), FILE_NAME, taskList);
+        taskJoint.saveTaskItems(requireActivity().getApplicationContext(), FILE_TASK_NAME, taskList);
     }
 
     private static class PagerAdapter extends FragmentStateAdapter {
@@ -150,9 +157,9 @@ public class TaskFragment extends Fragment{
         public Fragment createFragment(int position) {
             switch (position) {
                 case 0:
-                    return new TypeTaskFragment(taskType[0],0);
+                    return new PhaseTaskFragment(taskType[0],0);
                 case 1:
-                    return new TypeTaskFragment(taskType[1],1);
+                    return new PhaseTaskFragment(taskType[1],1);
                 default:
                     throw new IllegalArgumentException("Invalid position");
             }
@@ -163,10 +170,13 @@ public class TaskFragment extends Fragment{
             return NUM_TABS;
         }
     }
-    private int getPointSum(ArrayList<TaskItem> taskList){
+    private int getPointSum(ArrayList<TaskItem> taskList,ArrayList<RewardItem> rewardList){
         int sum = 0;
         for(TaskItem task:taskList){
             sum += task.getTaskPoint();
+        }
+        for(RewardItem reward:rewardList){
+            sum -= reward.getRewardPoint() * reward.getRewardFinish();
         }
         return sum;
     }

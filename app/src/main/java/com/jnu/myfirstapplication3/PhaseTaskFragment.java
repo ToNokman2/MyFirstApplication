@@ -1,7 +1,6 @@
 package com.jnu.myfirstapplication3;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -18,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.jnu.myfirstapplication3.Adapter.TaskRecyclerviewAdapter;
-import com.jnu.myfirstapplication3.data.DataBank;
 import com.jnu.myfirstapplication3.data.TaskItem;
 import com.jnu.myfirstapplication3.interFace.TaskJoint;
 import com.jnu.myfirstapplication3.data.TaskDataBank;
@@ -27,8 +25,8 @@ import com.jnu.myfirstapplication3.data.TaskDataBank;
 import java.util.ArrayList;
 
 
-public class TypeTaskFragment extends Fragment {
-    private static final int REQUEST_CODE_TASK_DETAILS = 1;
+public class PhaseTaskFragment extends Fragment {
+
     private RecyclerView taskRecyclerView;
     private ActivityResultLauncher<Intent> updateTaskLauncher;
     public TaskRecyclerviewAdapter taskRecyclerviewAdapter;
@@ -41,16 +39,16 @@ public class TypeTaskFragment extends Fragment {
     public ArrayList<TaskItem> taskListWithType;
     private final String FILE_NAME = "taskData.ser";
 
-    public TypeTaskFragment() {
+    public PhaseTaskFragment() {
         // Required empty public constructor
     }
-    public TypeTaskFragment(String taskType,int menuId){
+    public PhaseTaskFragment(String taskType, int menuId){
         this.menuId = menuId;
         this.taskType = taskType;
     }
 
-    public static TypeTaskFragment newInstance() {
-        TypeTaskFragment fragment = new TypeTaskFragment();
+    public static PhaseTaskFragment newInstance() {
+        PhaseTaskFragment fragment = new PhaseTaskFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -66,10 +64,8 @@ public class TypeTaskFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_phase_task, container, false);
 
-        // 初始化任务列表数据
         initTaskList();
 
-        // 设置RecyclerView和Adapter
         setupRecyclerView(rootView);
 
         return rootView;
@@ -152,7 +148,6 @@ public class TypeTaskFragment extends Fragment {
             deleteTask(order);
         });
         builder.setNegativeButton("取消", (dialog, which) -> {
-            // 取消删除操作
         });
         builder.create().show();
     }
@@ -160,6 +155,17 @@ public class TypeTaskFragment extends Fragment {
     private void deleteTask(int order) {
         taskListWithType.remove(order);
         taskRecyclerviewAdapter.notifyItemRemoved(order);
+    }
+
+    public boolean isMatchingTaskType(String taskType) {
+        return this.taskType.equals(taskType);
+    }
+
+
+    public void addTaskAndNotifyAdapter(TaskItem task) {
+        taskListWithType.add(task);
+        int position = taskListWithType.size() - 1;
+        taskRecyclerviewAdapter.notifyItemInserted(position);
     }
 
     private ArrayList<TaskItem> filterWithType(ArrayList<TaskItem> taskListAll,String taskType){

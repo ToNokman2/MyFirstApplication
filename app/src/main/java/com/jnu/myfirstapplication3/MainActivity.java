@@ -23,10 +23,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // 启用全屏模式
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
         setContentView(R.layout.activity_main);
         // 获取ViewPager2和TabLayout的实例
         ViewPager2 viewPager = findViewById(R.id.view_pager);
@@ -55,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
                 case 0:
                     return new TaskFragment();
                 case 1:
-                    return new WodeFragment();
+                    return new RewardFragment();
                 case 2:
                     return new WodeFragment();
                 default:

@@ -22,7 +22,7 @@ public class TaskDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_task_details_activity);
+        setContentView(R.layout.activity_task_details);
         EditText editTitle = findViewById(R.id.editTaskName);
         EditText editPoint = findViewById(R.id.editTaskPoints);
         EditText editTime  = findViewById(R.id.editTaskTime);

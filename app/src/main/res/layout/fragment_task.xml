@@ -66,9 +66,9 @@
             <ImageView
                 android:id="@+id/myImageView"
                 android:layout_width="60dp"
-                android:layout_height="50dp"
+                android:layout_height="45dp"
                 android:layout_gravity="center"
-                android:src="@drawable/money_foreground" />
+                android:src="@drawable/money" />
 
             <TextView
                 android:id="@+id/point_sum_text"

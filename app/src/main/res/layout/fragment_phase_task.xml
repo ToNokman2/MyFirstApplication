@@ -9,8 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="5"
-        android:textAlignment="center"
-        android:text="@string/task_tag_now"/>
+        android:text="@string/task_title_now"
+        android:textAlignment="center" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/task_recyclerView"

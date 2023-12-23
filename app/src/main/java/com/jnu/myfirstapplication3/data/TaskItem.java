@@ -68,14 +68,5 @@ public class TaskItem implements Serializable {
 
 
 
-    @Override
-    public String toString() {
-        return "TaskItem{" +
-                ", taskTitle='" + taskTitle + '\'' +
-                ", taskPoint=" + taskPoint +
-                ", taskNum=" + taskNum +
-                ", taskNumFinish=" + taskNumFinish +
-                ", taskType='" + taskType + '\'' +
-                '}';
-    }
+
 }

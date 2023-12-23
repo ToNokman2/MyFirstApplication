@@ -22,4 +22,13 @@
     <string name="task_time">任务时长</string>
     <string name="task_num_point">任务点数</string>
     <string name="name">ToNokman</string>
+    <string name="title_activity_reward_details">RewardDetailsActivity</string>
+    <string name="addNewReward">添加奖励</string>
+    <string name="reward_name">奖励名</string>
+    <string name="reward_point">奖励点数</string>
+    <string name="reward_item_title">奖励名</string>
+    <string name="reward_num_point">奖励点数</string>
+    <string name="reward_num">单次/多次</string>
+    <string name="reward_title_now" />
+    <string name="task_title_now" />
 </resources>
